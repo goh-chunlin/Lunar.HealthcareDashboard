@@ -1,0 +1,52 @@
+﻿@using healthcare_dashboard.Models.ViewModels
+
+@model PatientsViewModel
+
+@{
+    ViewData["Title"] = "All Patients";
+}
+
+<div class="ms-Grid" dir="ltr">
+    <div class="ms-Grid-row">
+        <div class="ms-Grid-col ms-sm12">
+
+            <span class="ms-font-su ms-fontColor-themeSecondary">Patients</span>
+
+            <fast-divider></fast-divider>
+        </div>
+        
+        <div class="ms-Grid-col ms-sm12">
+            <span class="ms-font-su ms-fontColor-themeSecondary">@Model.Message</span>
+            
+            <fast-card style="padding: 10px; background-color:#ffffff;">
+                <table class="ms-Table">
+                    <tr class="ms-Table-row">
+                        <td class="ms-Table-cell">#</td>
+                        <td class="ms-Table-cell">First Name</td>
+                        <td class="ms-Table-cell">Last Name</td>
+                        <td class="ms-Table-cell">Gender</td>
+                        <td class="ms-Table-cell">City</td>
+                        <td class="ms-Table-cell">State</td>
+                        <td class="ms-Table-cell">Country</td>
+                        <td class="ms-Table-cell">Operations</td>
+                    </tr>
+                    
+                    @{ int patientCounter = 0; }
+                    @foreach(var patient in Model.Patients)
+                    {
+                        <tr class="ms-Table-row">
+                            <td class="ms-Table-cell">@(++patientCounter)</td>
+                            <td class="ms-Table-cell">@patient.FirstName</td>
+                            <td class="ms-Table-cell">@patient.LastName</td>
+                            <td class="ms-Table-cell">@patient.Gender</td>
+                            <td class="ms-Table-cell">@patient.City</td>
+                            <td class="ms-Table-cell">@patient.State</td>
+                            <td class="ms-Table-cell">@patient.Country</td>
+                            <td class="ms-Table-cell"><a href="/Patient/Index/@patient.Id" target="_blank"><i class="ms-Icon ms-Icon--ProfileSearch" aria-hidden="true"></i> View Profile</a></td>
+                        </tr>
+                    }
+                </table>
+            </fast-card>
+        </div>
+    </div>
+</div>

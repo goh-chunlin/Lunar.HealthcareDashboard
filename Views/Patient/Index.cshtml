@@ -1,0 +1,176 @@
+﻿@using healthcare_dashboard.Models.ViewModels
+
+@model PatientInfoViewModel
+
+@{
+    ViewData["Title"] = "Patient";
+
+    var patient = Model.Patient;
+    var conditions = Model.Conditions.OrderByDescending(c => c.RecordedDateTime);
+    var encounters = Model.Encounters.OrderByDescending(e => e.StartingDateTime);
+    var observations = Model.Observations.OrderByDescending(o => o.EffectiveDateTime);
+}
+
+<div class="ms-Grid" dir="ltr">
+    <div class="ms-Grid-row">
+        <div class="ms-Grid-col ms-sm12">
+
+            <span class="ms-font-su ms-fontColor-themeSecondary">@patient.FirstName @patient.LastName</span>
+
+            <fast-divider></fast-divider>
+
+            @if(!string.IsNullOrWhiteSpace(Model.Message))
+            {
+                <p>
+                    <fast-badge appearance="accent">Error</fast-badge> @Model.Message
+                </p>
+            }
+
+        </div>
+    </div>
+    <div class="ms-Grid-row">
+        <div class="ms-Grid-col ms-sm6 ms-md3">
+            <fast-card style="padding: 10px;">
+                <h3>@patient.FirstName @patient.LastName</h3>
+                <p>Gender: @patient.Gender</p>
+                <p>Contact: @patient.Contact</p>
+                <p>Birth Date: @patient.BirthDate.ToString("yyyy-MM-dd")</p>
+                <p>Marital Status: @patient.MaritalStatus</p>
+                <fast-button appearance="accent" onclick="document.getElementById('addressDialog').toggleAttribute('hidden');">View Address
+                </fast-button>
+            </fast-card>
+
+        </div>
+        <div class="ms-Grid-col ms-sm6 ms-md9">
+            <fast-tabs activeId="entrees">
+                <fast-tab id="conditions">Conditions</fast-tab>
+                <fast-tab id="encounters">Encounters</fast-tab>
+                <fast-tab id="observations">Observations</fast-tab>
+                <fast-tab-panel id="conditionsPanel">
+
+                    <fast-card style="padding: 10px; margin: 10px; background-color:#ffffff;">
+                        <table class="ms-Table">
+                            <tr class="ms-Table-row">
+                                <td class="ms-Table-cell">#</td>
+                                <td class="ms-Table-cell">Recorded Date</td>
+                                <td class="ms-Table-cell">Description</td>
+                                <td class="ms-Table-cell">Status</td>
+                            </tr>
+                            
+                            @{ int conditionCounter = 0; }
+                            @foreach(var condition in conditions)
+                            {
+                                <tr class="ms-Table-row">
+                                    <td class="ms-Table-cell">@(++conditionCounter)</td>
+                                    <td class="ms-Table-cell">@condition.RecordedDateTime.ToString("yyyy-MM-dd HH:mm:ss zzzz")</td>
+                                    <td class="ms-Table-cell">@condition.Description</td>
+                                    <td class="ms-Table-cell">@condition.Status</td>
+                                </tr>
+                            }
+                        </table>
+                    </fast-card>
+
+                </fast-tab-panel>
+                <fast-tab-panel id="encountersPanel">
+                    
+                    <fast-card style="padding: 10px; margin: 10px; background-color:#ffffff;">
+                        <table class="ms-Table">
+                            <tr class="ms-Table-row">
+                                <td class="ms-Table-cell">#</td>
+                                <td class="ms-Table-cell">Start Date</td>
+                                <td class="ms-Table-cell">End Date</td>
+                                <td class="ms-Table-cell">Description</td>
+                                <td class="ms-Table-cell">Service Provider</td>
+                                <td class="ms-Table-cell">Status</td>
+                            </tr>
+                            
+                            @{ int encounterCounter = 0; }
+                            @foreach(var encounter in encounters)
+                            {
+                                <tr class="ms-Table-row">
+                                    <td class="ms-Table-cell">@(++encounterCounter)</td>
+                                    <td class="ms-Table-cell">@encounter.StartingDateTime.ToString("yyyy-MM-dd HH:mm:ss zzzz")</td>
+                                    <td class="ms-Table-cell">@encounter.EndingDateTime.ToString("yyyy-MM-dd HH:mm:ss zzzz")</td>
+                                    <td class="ms-Table-cell">@encounter.Description</td>
+                                    <td class="ms-Table-cell">@encounter.ServiceProvider</td>
+                                    <td class="ms-Table-cell">@encounter.Status</td>
+                                </tr>
+                            }
+                        </table>
+                    </fast-card>
+
+                </fast-tab-panel>
+                <fast-tab-panel id="observationsPanel">
+                    
+                    <fast-card style="padding: 10px; margin: 10px; background-color:#ffffff;">
+                        <table class="ms-Table">
+                            <tr class="ms-Table-row">
+                                <td class="ms-Table-cell">#</td>
+                                <td class="ms-Table-cell">Effective Date</td>
+                                <td class="ms-Table-cell">Description</td>
+                                <td class="ms-Table-cell">Measurement</td>
+                                <td class="ms-Table-cell">Status</td>
+                            </tr>
+                            
+                            @{ int observationCounter = 0; }
+                            @foreach(var observation in observations)
+                            {
+                                <tr class="ms-Table-row">
+                                    <td class="ms-Table-cell">@(++observationCounter)</td>
+                                    <td class="ms-Table-cell">@observation.EffectiveDateTime.ToString("yyyy-MM-dd HH:mm:ss zzzz")</td>
+                                    <td class="ms-Table-cell">@observation.Description</td>
+                                    <td class="ms-Table-cell">@observation.Measurement</td>
+                                    <td class="ms-Table-cell">@observation.Status</td>
+                                </tr>
+                            }
+                        </table>
+                    </fast-card>
+
+                </fast-tab-panel>
+            </fast-tabs>
+        </div>
+    </div>
+</div>
+
+
+<fast-dialog id="addressDialog" class="example-dialog" aria-label="Address Dialog" modal="true" hidden>
+    <div style="padding: 10px;">
+        <h2>Address</h2>
+        <p>
+            @foreach(var line in patient.Lines)
+            {
+                <span>@line</span><br />
+            }
+            <span>@patient.City, @patient.PostalCode</span><br />
+            <span>@patient.State</span><br />
+            <span>@patient.Country</span><br />
+        </p>
+
+        <div id="map" style="height: 240px; margin: 20px 0;"></div>
+        
+        <fast-button autofocus onclick="document.getElementById('addressDialog').toggleAttribute('hidden');">Close
+            Dialog
+        </fast-button>
+    </div>
+
+</fast-dialog>
+
+@section Scripts
+{
+    <script>
+        function initMap() {
+            var patientAddressLatLng = { lat: @patient.Latitude, lng: @patient.Longitude };
+
+            var map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 12,
+                center: patientAddressLatLng
+            });
+
+            var marker = new google.maps.Marker({
+                position: patientAddressLatLng,
+                map: map,
+                title: "Address of @patient.FirstName @patient.LastName"
+            });
+        }
+    </script>
+}

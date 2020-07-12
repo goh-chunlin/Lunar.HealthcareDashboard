@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Lunar Healthcare</title>
+    <link rel="icon" type="image/svg+xml" href="https://lunar-website-statics.azureedge.net/website-statics/lunar-healthcare.svg" />
+    <link rel="stylesheet" href="https://lunar-website-statics.azureedge.net/website-statics/fabric.components.min.css" />
+    <link rel="stylesheet" href="https://lunar-website-statics.azureedge.net/website-statics/fabric.min.css" />
+    <script type="module" src="https://unpkg.com/@@microsoft/fast-components"></script>
+
+    @if (ViewData["GoogleMapsApiKey"] != null && ViewData["GoogleMapsApiKey"].ToString() != string.Empty)
+    {
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+        <script
+            src="https://maps.googleapis.com/maps/api/js?key=@(ViewData["GoogleMapsApiKey"].ToString())&callback=initMap&libraries=&v=weekly"
+            defer></script>
+    }
+    
+</head>
+<body class="ms-Fabric" dir="ltr" style="background-color: #181818; margin: 0;">
+    <header>
+        <nav class="ms-NavBar">
+            <ul class="ms-NavBar-items">
+                <li class="ms-NavBar-item">
+                    <img src="https://lunar-website-statics.azureedge.net/website-statics/lunar-healthcare.svg"
+                        style="height: 24px; vertical-align: middle;" />
+                    <strong>Lunar Healthcare</strong>
+                </li>
+                <li class="ms-NavBar-item">
+                    |
+                </li>
+                <li class="ms-NavBar-item is-selected">
+                    <a class="ms-NavBar-link" href="#"><i class="ms-Icon ms-Icon--ContactHeart" aria-hidden="true"></i>
+                        Patients</a>
+                </li>
+
+                <li class="ms-NavBar-item ms-NavBar-item--right"><a class="ms-NavBar-link" href="#">GCL Projects</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <fast-design-system-provider use-defaults>
+        @RenderBody()
+    </fast-design-system-provider>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
